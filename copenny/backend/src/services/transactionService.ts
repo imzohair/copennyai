@@ -192,6 +192,9 @@ export async function importCSV(userId: number, fileBuffer: Buffer): Promise<{ i
   let imported = 0;
   const errors: string[] = [];
 
+  // Wipe existing data so we don't duplicate on repeated uploads
+  await query('DELETE FROM transactions WHERE user_id = $1', [userId]);
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     if (!row) continue;
