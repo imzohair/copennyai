@@ -1,29 +1,61 @@
-import { useState } from 'react';
-import { apiClient } from '@/lib/api/client';
-import { useAuthStore } from '@/store/useAuthStore';
+'use client';
+
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  updateProfile,
+  signOut,
+} from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterCredentials {
+  name: string;
+  email: string;
+  password: string;
+}
 
 export function useAuth() {
-  const { user, token, isAuthenticated, setAuth, logout: storeLogout } = useAuthStore();
+  const router = useRouter();
+  const { user, isAuthenticated, setAuth, logout: storeLogout } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
-  const login = async (credentials: Record<string, unknown>) => {
+  const login = async ({ email, password }: LoginCredentials) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiClient.post('/auth/login', credentials);
-      const { user: authUser, token: authToken } = response.data;
-      setAuth(authUser, authToken);
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const fbUser = credential.user;
+      const token = await fbUser.getIdToken();
+      setAuth(
+        {
+          uid: fbUser.uid,
+          email: fbUser.email ?? '',
+          displayName: fbUser.displayName,
+          photoURL: fbUser.photoURL,
+        },
+        token
+      );
       router.push('/');
       return true;
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
-        setError(errorData || 'Login failed');
+      const code = (err as { code?: string }).code ?? '';
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        setError('Invalid email or password');
+      } else if (code === 'auth/too-many-requests') {
+        setError('Too many attempts. Please try again later.');
       } else {
-        setError('Login failed');
+        setError('Login failed. Please try again.');
       }
       return false;
     } finally {
@@ -31,21 +63,36 @@ export function useAuth() {
     }
   };
 
-  const register = async (userData: Record<string, unknown>) => {
+  const register = async ({ name, email, password }: RegisterCredentials) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiClient.post('/auth/register', userData);
-      const { user: authUser, token: authToken } = response.data;
-      setAuth(authUser, authToken);
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      const fbUser = credential.user;
+      // Set the display name
+      await updateProfile(fbUser, { displayName: name });
+      const token = await fbUser.getIdToken();
+      setAuth(
+        {
+          uid: fbUser.uid,
+          email: fbUser.email ?? '',
+          displayName: name,
+          photoURL: fbUser.photoURL,
+        },
+        token
+      );
       router.push('/');
       return true;
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
-        setError(errorData || 'Registration failed');
+      const code = (err as { code?: string }).code ?? '';
+      if (code === 'auth/email-already-in-use') {
+        setError('An account with this email already exists. Please sign in.');
+      } else if (code === 'auth/weak-password') {
+        setError('Password must be at least 6 characters.');
+      } else if (code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.');
       } else {
-        setError('Registration failed');
+        setError('Registration failed. Please try again.');
       }
       return false;
     } finally {
@@ -53,21 +100,29 @@ export function useAuth() {
     }
   };
 
-  const loginWithGoogle = async (idToken: string) => {
+  const loginWithGoogle = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiClient.post('/auth/google', { idToken });
-      const { user: authUser, token: authToken } = response.data;
-      setAuth(authUser, authToken);
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(auth, provider);
+      const fbUser = credential.user;
+      const token = await fbUser.getIdToken();
+      setAuth(
+        {
+          uid: fbUser.uid,
+          email: fbUser.email ?? '',
+          displayName: fbUser.displayName,
+          photoURL: fbUser.photoURL,
+        },
+        token
+      );
       router.push('/');
       return true;
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
-        setError(errorData || 'Google login failed');
-      } else {
-        setError('Google login failed');
+      const code = (err as { code?: string }).code ?? '';
+      if (code !== 'auth/popup-closed-by-user') {
+        setError('Google sign-in failed. Please try again.');
       }
       return false;
     } finally {
@@ -75,14 +130,14 @@ export function useAuth() {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await signOut(auth);
     storeLogout();
     router.push('/login');
   };
 
   return {
     user,
-    token,
     isAuthenticated,
     isLoading,
     error,
