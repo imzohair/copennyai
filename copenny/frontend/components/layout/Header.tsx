@@ -1,7 +1,27 @@
-import { Search, Bell, ChevronDown, TrendingUp } from "lucide-react";
+"use client";
+
+import { Search, Bell, ChevronDown, TrendingUp, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Header() {
+  const { user, logout } = useAuth();
+
+  const displayName = user?.displayName ?? user?.email?.split("@")[0] ?? "User";
+  const initials = displayName
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
   return (
     <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6 shrink-0">
       <div className="flex items-center flex-1 max-w-2xl">
@@ -46,21 +66,37 @@ export function Header() {
           <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary ring-2 ring-background"></span>
         </button>
 
-        <div className="flex items-center gap-3 cursor-pointer group pl-2">
-          <Avatar className="w-8 h-8 border border-primary/40 group-hover:border-primary transition-colors">
-            <AvatarImage src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfmgi2jz64UTY6-XIk4OHKruX9tJN3uRxgxlftZAn5_2NUzBdT8PDbkOVbVPAzD5PiNW-csP_P6n6vZVPRa1OdAD3yGr0rNqylJ0hetKKwvP3-pEq2kr2sneEVbqqTbHekXOdBnZLC4ofoYsqronu6CSPVJLLp2GTS2ZbrWd1eUqbNgneiHq_2EXZfllv6rKVkN0cRnUEGu1JWAXM17MPVFhJHoojSTAIKyLNE5xgdgNV-2QYy6gtz" />
-            <AvatarFallback>LH</AvatarFallback>
-          </Avatar>
-          <div className="hidden lg:flex flex-col">
-            <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-none">
-              Lord Harrington
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-1">
-              VIP Portfolio Director
-            </span>
-          </div>
-          <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground hidden lg:block" />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            <div className="flex items-center gap-3 cursor-pointer group pl-2 outline-none">
+              <Avatar className="w-8 h-8 border border-primary/40 group-hover:border-primary transition-colors">
+                <AvatarImage src={user?.photoURL ?? undefined} />
+                <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="hidden lg:flex flex-col">
+                <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-none">
+                  {displayName}
+                </span>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-1">
+                  {user?.email ?? "Portfolio Member"}
+                </span>
+              </div>
+              <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground hidden lg:block" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive cursor-pointer"
+              onClick={logout}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
