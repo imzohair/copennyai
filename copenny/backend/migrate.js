@@ -69,6 +69,21 @@ async function migrate() {
     `);
     console.log('✓ subscriptions table ready');
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS budgets (
+        id             SERIAL PRIMARY KEY,
+        user_id        INTEGER NOT NULL,
+        category       VARCHAR(50) NOT NULL,
+        limit_amount   NUMERIC(14, 2) NOT NULL,
+        spent_amount   NUMERIC(14, 2) NOT NULL DEFAULT 0,
+        month          VARCHAR(7) NOT NULL, -- Format: YYYY-MM
+        created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_budgets_user_id ON budgets(user_id);
+    `);
+    console.log('✓ budgets table ready');
+
     console.log('\n✅ All migrations complete!');
   } catch (error) {
     console.error('Migration failed:', error);

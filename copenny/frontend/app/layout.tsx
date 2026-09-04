@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Copenny Wealth Command Center",
 };
 
+import { Toaster } from 'sonner';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,10 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} dark antialiased`}
     >
-      <body className="min-h-screen bg-background font-sans flex flex-col">{children}</body>
+      <body className="min-h-screen bg-background font-sans flex flex-col">
+        {children}
+        <Toaster theme="dark" richColors />
+      </body>
     </html>
   );
 }
