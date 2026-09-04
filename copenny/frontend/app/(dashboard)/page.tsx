@@ -57,7 +57,7 @@ export default function DashboardHome() {
 
   useEffect(() => {
     apiClient
-      .get("/transactions?limit=6")
+      .get("/transactions?limit=1000")
       .then((res) => {
         setTransactions(res.data.transactions || []);
       })

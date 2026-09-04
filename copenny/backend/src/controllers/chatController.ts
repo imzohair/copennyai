@@ -7,21 +7,19 @@ async function getUserContext(userId: number) {
   const txRes = await query('SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC LIMIT 50', [userId]);
   const transactions = txRes.rows;
 
-  // Calculate Monthly Income (Credits in current month)
+  // Calculate Total Income (All-time Credits)
   const incomeRes = await query(`
     SELECT SUM(amount) as total 
     FROM transactions 
-    WHERE user_id = $1 AND type = 'CREDIT' 
-    AND date_trunc('month', date) = date_trunc('month', CURRENT_DATE)
+    WHERE user_id = $1 AND type = 'credit'
   `, [userId]);
   const monthlyIncome = parseFloat(incomeRes.rows[0].total) || 0;
 
-  // Calculate Monthly Expenses (Debits in current month)
+  // Calculate Total Expenses (All-time Debits)
   const expenseRes = await query(`
     SELECT SUM(amount) as total 
     FROM transactions 
-    WHERE user_id = $1 AND type = 'DEBIT' 
-    AND date_trunc('month', date) = date_trunc('month', CURRENT_DATE)
+    WHERE user_id = $1 AND type = 'debit'
   `, [userId]);
   const monthlyExpenses = parseFloat(expenseRes.rows[0].total) || 0;
 
@@ -34,8 +32,8 @@ async function getUserContext(userId: number) {
   // Calculate Total Balance (all credits - all debits)
   const balanceRes = await query(`
     SELECT 
-      SUM(CASE WHEN type = 'CREDIT' THEN amount ELSE 0 END) - 
-      SUM(CASE WHEN type = 'DEBIT' THEN amount ELSE 0 END) as balance
+      SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END) - 
+      SUM(CASE WHEN type = 'debit' THEN amount ELSE 0 END) as balance
     FROM transactions
     WHERE user_id = $1
   `, [userId]);

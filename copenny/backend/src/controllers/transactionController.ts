@@ -13,6 +13,8 @@ import {
   type TransactionInput,
 } from '../services/transactionService';
 import { emitToUser } from '../services/websocketService';
+import { detectSubscriptions } from '../services/subscriptionService';
+import { evaluateRules } from '../services/ruleEngineService';
 
 // Run once at startup to ensure table exists
 ensureTransactionsTable().catch(console.error);
@@ -162,6 +164,15 @@ export const importCSVHandler = async (req: Request, res: Response, next: NextFu
       return res.status(400).json({ success: false, error: 'No CSV file uploaded. Use field name "file".' });
     }
     const result = await importCSV(req.user.id as number, req.file.buffer);
+
+    // Automatically trigger analysis on new data so it's instantly visible on the frontend
+    try {
+      await detectSubscriptions(req.user.id as number);
+      await evaluateRules(req.user.id as number);
+    } catch (analysisErr) {
+      console.error('Error running post-import analysis:', analysisErr);
+    }
+
     return res.status(201).json({ success: true, ...result });
   } catch (err) {
     next(err);

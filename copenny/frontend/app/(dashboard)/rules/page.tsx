@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Plus, ToggleRight, Trash2, Bell, CreditCard, TrendingDown, AlertTriangle, PiggyBank, Zap } from "lucide-react";
+import { ShieldCheck, Plus, ToggleRight, Trash2, Bell, CreditCard, TrendingDown, AlertTriangle, PiggyBank, Zap, Loader2 } from "lucide-react";
+import { apiClient } from "@/lib/api/client";
 
 interface Rule {
   id: number;
@@ -88,7 +89,15 @@ const categoryColor: Record<string, string> = {
 };
 
 export default function RulesPage() {
-  const [rules, setRules] = useState<Rule[]>(initialRules);
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient.get("/rules")
+      .then(res => setRules(res.data))
+      .catch(err => console.error("Failed to fetch rules", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const toggle = (id: number) => setRules(prev => prev.map(r => r.id === id ? { ...r, active: !r.active } : r));
   const remove = (id: number) => setRules(prev => prev.filter(r => r.id !== id));
