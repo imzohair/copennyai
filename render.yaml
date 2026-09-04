@@ -17,7 +17,7 @@ services:
       - key: FEATHERLESS_DEFAULT_MODEL
         value: Qwen/Qwen3-32B
       - key: JWT_SECRET
-        generateValue: true
+        value: f03992dfc851622c2a8c497393f316d1c37c33c923cd58825a3369d279f62a88af728313748e6fc6c7ec9b94bc1fafe836df88f12e7791dbbf6652381ede0816
       - key: FIREBASE_PROJECT_ID
         value: copenny-8b877
       - key: FIREBASE_CLIENT_EMAIL
