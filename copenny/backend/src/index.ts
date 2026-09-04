@@ -28,7 +28,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.options('*', cors());   // Handle preflight requests for all routes
+app.options('/{*splat}', cors()); // Handle preflight for all routes (Express 5 / path-to-regexp v8+)
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
