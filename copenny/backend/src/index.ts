@@ -21,7 +21,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Allow requests from any origin with Authorization headers
+app.use(cors({
+  origin: true,              // Reflect the request origin (allows all)
+  credentials: true,         // Allow cookies and Authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('*', cors());   // Handle preflight requests for all routes
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
