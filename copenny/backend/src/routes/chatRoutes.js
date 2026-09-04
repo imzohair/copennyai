@@ -11,5 +11,6 @@ router.post('/actions', chatController_1.generateActions);
 router.post('/explain', chatController_1.explainInsight);
 router.post('/classify', chatController_1.classifyTransaction);
 router.post('/execute-action', chatController_1.executeAction);
+router.post('/query', chatController_1.chatQuery);
 exports.default = router;
 //# sourceMappingURL=chatRoutes.js.map

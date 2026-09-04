@@ -137,3 +137,23 @@ export async function executeAction(req: Request, res: Response) {
     res.status(500).json({ error: 'Failed to execute action' });
   }
 }
+
+export async function chatQuery(req: Request, res: Response) {
+  try {
+    const userId = (req as any).user.userId;
+    const { query, history = [] } = req.body;
+
+    if (!query) {
+      res.status(400).json({ error: 'Query is required' });
+      return;
+    }
+
+    const { userContext } = await getUserContext(userId);
+    const responseText = await featherlessService.processChatQuery(query, history, userContext);
+    
+    res.json({ response: responseText });
+  } catch (error) {
+    console.error('Error in chatQuery:', error);
+    res.status(500).json({ error: 'Failed to process chat query' });
+  }
+}

@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send, Bot, User, Sparkles } from "lucide-react";
+import { sendChatQuery } from "@/lib/api/chat";
 
 interface Message {
   id: number;
@@ -24,45 +25,41 @@ const suggestions = [
 
 const getTime = () => new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 
-const aiResponses: Record<string, string> = {
-  default: "I'm Copenny AI, your personal wealth assistant. I can analyse your spending patterns, help optimize your budget, and provide insights tailored to your portfolio. What would you like to know?",
-  spend: "In September 2026, you have spent ₹48,200 so far — primarily on housing (₹22,000), dining (₹8,500), and shopping (₹9,400). You are 4.1% over your monthly average.",
-  cut: "Based on your spending patterns, here are 3 areas to optimise:\n\n1. **Shopping** — ₹9,400 spent vs ₹8,000 budget. Review Amazon orders.\n2. **Dining** — ₹8,500 on food. Consider cooking at home 2 extra days per week.\n3. **Subscriptions** — You have 6 active. Consider pausing Cult.fit if unused.",
-  saving: "Your savings rate this month is **57.7%**, which is excellent. You are saving ₹65,800 from a gross income of ₹1,14,000. At this rate, you will add approximately ₹7.9 lakhs to your net worth this year.",
-  expense: "Your top 5 expenses for September:\n1. 🏠 Housing — ₹22,000\n2. 🛍 Shopping — ₹9,400\n3. 🍽 Food & Dining — ₹8,500\n4. 🚗 Transport — ₹5,200\n5. ⚡ Utilities — ₹2,800",
-};
-
-function getResponse(msg: string): string {
-  const lower = msg.toLowerCase();
-  if (lower.includes("spend") || lower.includes("spent")) return aiResponses.spend;
-  if (lower.includes("cut") || lower.includes("reduce") || lower.includes("save more")) return aiResponses.cut;
-  if (lower.includes("saving") || lower.includes("savings rate")) return aiResponses.saving;
-  if (lower.includes("biggest") || lower.includes("expense") || lower.includes("top")) return aiResponses.expense;
-  return aiResponses.default;
-}
-
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, role: "assistant", content: aiResponses.default, time: getTime() },
+    { id: 1, role: "assistant", content: "I'm Copenny AI, your personal wealth assistant. I can analyze your spending patterns, help optimize your budget, and provide insights tailored to your portfolio. What would you like to know?", time: getTime() },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isLoading]);
 
-  const send = (text?: string) => {
+  const send = async (text?: string) => {
     const msg = (text ?? input).trim();
-    if (!msg) return;
+    if (!msg || isLoading) return;
+    
     setInput("");
     const userMsg: Message = { id: nextId(), role: "user", content: msg, time: getTime() };
+    
+    // Prepare history for API (excluding the greeting to save tokens, or send last 5 msgs)
+    const history = messages.slice(-5).map(m => ({ role: m.role, content: m.content }));
+    
     setMessages(prev => [...prev, userMsg]);
+    setIsLoading(true);
 
-    setTimeout(() => {
-      const aiMsg: Message = { id: nextId(), role: "assistant", content: getResponse(msg), time: getTime() };
+    try {
+      const responseText = await sendChatQuery(msg, history);
+      const aiMsg: Message = { id: nextId(), role: "assistant", content: responseText, time: getTime() };
       setMessages(prev => [...prev, aiMsg]);
-    }, 800);
+    } catch (error) {
+      const aiMsg: Message = { id: nextId(), role: "assistant", content: "I'm sorry, I'm having trouble connecting to the server. Please try again.", time: getTime() };
+      setMessages(prev => [...prev, aiMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -109,6 +106,18 @@ export default function ChatPage() {
             )}
           </div>
         ))}
+        {isLoading && (
+          <div className="flex gap-3 justify-start">
+            <div className="w-7 h-7 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 mt-1">
+              <Bot className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <div className="bg-card border border-border rounded-2xl rounded-bl-none px-4 py-3 flex gap-1 items-center">
+              <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }} />
+              <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+              <div className="w-2 h-2 rounded-full bg-primary/80 animate-bounce" style={{ animationDelay: "300ms" }} />
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 

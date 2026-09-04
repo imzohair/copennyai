@@ -38,6 +38,7 @@ exports.generateActions = generateActions;
 exports.explainInsight = explainInsight;
 exports.classifyTransaction = classifyTransaction;
 exports.executeAction = executeAction;
+exports.chatQuery = chatQuery;
 const db_1 = require("../config/db");
 const featherlessService = __importStar(require("../services/featherlessService"));
 const websocketService_1 = require("../services/websocketService");
@@ -160,6 +161,23 @@ async function executeAction(req, res) {
     catch (error) {
         console.error('Error in executeAction:', error);
         res.status(500).json({ error: 'Failed to execute action' });
+    }
+}
+async function chatQuery(req, res) {
+    try {
+        const userId = req.user.userId;
+        const { query, history = [] } = req.body;
+        if (!query) {
+            res.status(400).json({ error: 'Query is required' });
+            return;
+        }
+        const { userContext } = await getUserContext(userId);
+        const responseText = await featherlessService.processChatQuery(query, history, userContext);
+        res.json({ response: responseText });
+    }
+    catch (error) {
+        console.error('Error in chatQuery:', error);
+        res.status(500).json({ error: 'Failed to process chat query' });
     }
 }
 //# sourceMappingURL=chatController.js.map

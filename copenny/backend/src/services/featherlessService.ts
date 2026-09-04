@@ -176,3 +176,30 @@ export async function detectAnomaly(transactions: any[]): Promise<any[]> {
     return [];
   }
 }
+
+export async function processChatQuery(query: string, history: any[], userContext: any): Promise<string> {
+  try {
+    const messages = [
+      { 
+        role: 'system', 
+        content: `You are Copenny AI, an intelligent personal wealth advisor. 
+        Use the following user context to provide highly personalized, concise, and actionable advice:
+        Context: ${JSON.stringify(userContext)}
+        Format your response in clean markdown.`
+      },
+      // Insert history here
+      ...history.map(msg => ({ role: msg.role, content: msg.content })),
+      { role: 'user', content: query }
+    ];
+
+    const response = await featherlessClient.chat.completions.create({
+      model: DEFAULT_MODEL,
+      messages: messages as any,
+    });
+
+    return response.choices[0]?.message?.content || "I'm sorry, I couldn't process your request.";
+  } catch (error) {
+    console.error('Failed to process chat query:', error);
+    return "I am currently experiencing connection issues. Please try again later.";
+  }
+}

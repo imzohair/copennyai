@@ -21,4 +21,5 @@ export declare function generateAction(userData: any, subscriptions: any[]): Pro
 export declare function explainReasoning(insight: any): Promise<string>;
 export declare function classifyTransaction(description: string, amount: number): Promise<string>;
 export declare function detectAnomaly(transactions: any[]): Promise<any[]>;
+export declare function processChatQuery(query: string, history: any[], userContext: any): Promise<string>;
 //# sourceMappingURL=featherlessService.d.ts.map

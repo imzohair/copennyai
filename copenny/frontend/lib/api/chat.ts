@@ -38,11 +38,12 @@ export const executeAction = async (actionId: string): Promise<void> => {
   await apiClient.post('/chat/execute-action', { actionId });
 };
 
-export const sendChatQuery = async (query: string): Promise<string> => {
-  // Option A implementation (mocking for now as the backend isn't built yet)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(`I received your query: "${query}". (Backend /query endpoint is under construction)`);
-    }, 1000);
-  });
+export const classifyTransaction = async (description: string, amount: number): Promise<string> => {
+  const response = await apiClient.post('/chat/classify', { description, amount });
+  return response.data.category;
+};
+
+export const sendChatQuery = async (query: string, history: any[] = []): Promise<string> => {
+  const response = await apiClient.post('/chat/query', { query, history });
+  return response.data.response;
 };

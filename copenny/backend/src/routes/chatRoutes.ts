@@ -5,7 +5,8 @@ import {
   generateActions,
   explainInsight,
   classifyTransaction,
-  executeAction
+  executeAction,
+  chatQuery
 } from '../controllers/chatController';
 
 const router = Router();
@@ -18,5 +19,6 @@ router.post('/actions', generateActions);
 router.post('/explain', explainInsight);
 router.post('/classify', classifyTransaction);
 router.post('/execute-action', executeAction);
+router.post('/query', chatQuery);
 
 export default router;
