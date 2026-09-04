@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: copenny-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false # Set this in Render dashboard to point to the backend URL after it deploys

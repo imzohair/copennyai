@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: copenny-backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: FEATHERLESS_API_KEY
+        sync: false
+      - key: FEATHERLESS_BASE_URL
+        value: https://api.featherless.ai/v1
+      - key: FEATHERLESS_DEFAULT_MODEL
+        value: Qwen/Qwen3-32B
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5000

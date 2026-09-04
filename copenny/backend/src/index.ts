@@ -37,6 +37,11 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/rules', ruleRoutes);
 
+// Health check endpoint for Render
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // Background Cron Jobs
 cron.schedule('0 0 * * *', async () => {
   console.log('Running daily background jobs...');
