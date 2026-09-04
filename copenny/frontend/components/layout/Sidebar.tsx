@@ -68,14 +68,30 @@ export function Sidebar() {
       
       {/* Footer Info */}
       <div className="p-4 border-t border-border mt-auto">
-        <div className="bg-card border border-border rounded-md p-3 flex items-center gap-3">
-            <ShieldCheck className="w-5 h-5 text-primary" />
-            <div className="text-xs text-muted-foreground">
-              System Status: <br/>
-              <span className="text-foreground font-medium uppercase text-[10px]">All Encrypted</span>
+        <div className="bg-card border border-border rounded-md p-3 flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+              <div className="text-xs text-muted-foreground">
+                System Status: <br/>
+                <span className="text-foreground font-medium uppercase text-[10px]">All Encrypted</span>
+              </div>
             </div>
+            <div className="w-full h-[1px] bg-border my-1"></div>
+            <LiveStatusIndicator />
         </div>
       </div>
     </aside>
+  );
+}
+
+// Extract hook usage to a sub-component to prevent the entire Sidebar from re-rendering
+import { useWebSocket } from "@/hooks/useWebSocket";
+function LiveStatusIndicator() {
+  const { isConnected } = useWebSocket();
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <div className={cn("w-2 h-2 rounded-full", isConnected ? "bg-emerald-500 animate-pulse" : "bg-destructive")} />
+      <span className="text-muted-foreground">{isConnected ? 'Live updates active' : 'Connecting...'}</span>
+    </div>
   );
 }

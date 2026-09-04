@@ -40,7 +40,7 @@ exports.classifyTransaction = classifyTransaction;
 exports.executeAction = executeAction;
 const db_1 = require("../config/db");
 const featherlessService = __importStar(require("../services/featherlessService"));
-// Helper to get raw aggregates using pg
+const websocketService_1 = require("../services/websocketService");
 async function getUserContext(userId) {
     // Get last 50 transactions
     const txRes = await (0, db_1.query)('SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC LIMIT 50', [userId]);
@@ -153,6 +153,8 @@ async function executeAction(req, res) {
         // In a real app, we would look up the action type and perform the db mutation.
         // For now, just log and acknowledge.
         console.log(`User ${userId} executed action: ${actionId}`);
+        // Notify the user in real-time
+        (0, websocketService_1.emitToUser)(userId, 'action-complete', { actionId });
         res.json({ success: true, message: `Action ${actionId} executed successfully.` });
     }
     catch (error) {

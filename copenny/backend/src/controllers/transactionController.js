@@ -7,6 +7,7 @@ exports.getCategories = exports.importCSVHandler = exports.deleteTransactionHand
 const zod_1 = require("zod");
 const multer_1 = __importDefault(require("multer"));
 const transactionService_1 = require("../services/transactionService");
+const websocketService_1 = require("../services/websocketService");
 // Run once at startup to ensure table exists
 (0, transactionService_1.ensureTransactionsTable)().catch(console.error);
 // ─── Multer ────────────────────────────────────────────────────────────────────
@@ -94,7 +95,10 @@ const createTransactionHandler = async (req, res, next) => {
             input.date = parsed.data.date;
         if (parsed.data.notes !== undefined)
             input.notes = parsed.data.notes;
-        const transaction = await (0, transactionService_1.createTransaction)(req.user.id, input);
+        const userId = req.user.id;
+        const transaction = await (0, transactionService_1.createTransaction)(userId, input);
+        // Notify frontend
+        (0, websocketService_1.emitToUser)(userId, 'new-transaction', transaction);
         return res.status(201).json({ success: true, transaction });
     }
     catch (err) {

@@ -18,6 +18,8 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = require("./config/db");
 const subscriptionService_1 = require("./services/subscriptionService");
 const ruleEngineService_1 = require("./services/ruleEngineService");
+const http_1 = __importDefault(require("http"));
+const websocketService_1 = require("./services/websocketService");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
@@ -55,7 +57,10 @@ node_cron_1.default.schedule('0 0 * * *', async () => {
 });
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler_1.errorHandler);
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+const server = http_1.default.createServer(app);
+// Initialize WebSockets
+(0, websocketService_1.initializeWebSocket)(server);
+server.listen(PORT, () => {
+    console.log(`Backend server running on http://localhost:${PORT}`);
 });
 //# sourceMappingURL=index.js.map

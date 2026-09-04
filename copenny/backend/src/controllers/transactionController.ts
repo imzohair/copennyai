@@ -12,6 +12,7 @@ import {
   type TransactionFilters,
   type TransactionInput,
 } from '../services/transactionService';
+import { emitToUser } from '../services/websocketService';
 
 // Run once at startup to ensure table exists
 ensureTransactionsTable().catch(console.error);
@@ -100,7 +101,12 @@ export const createTransactionHandler = async (req: Request, res: Response, next
     if (parsed.data.date      !== undefined) input.date     = parsed.data.date;
     if (parsed.data.notes     !== undefined) input.notes    = parsed.data.notes;
 
-    const transaction = await createTransaction(req.user.id as number, input);
+    const userId = req.user.id as number;
+    const transaction = await createTransaction(userId, input);
+
+    // Notify frontend
+    emitToUser(userId, 'new-transaction', transaction);
+
     return res.status(201).json({ success: true, transaction });
   } catch (err) {
     next(err);

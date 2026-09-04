@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { query } from '../config/db';
 import * as featherlessService from '../services/featherlessService';
-
-// Helper to get raw aggregates using pg
+import { emitToUser } from '../services/websocketService';
 async function getUserContext(userId: number) {
   // Get last 50 transactions
   const txRes = await query('SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC LIMIT 50', [userId]);
@@ -128,6 +127,9 @@ export async function executeAction(req: Request, res: Response) {
     // In a real app, we would look up the action type and perform the db mutation.
     // For now, just log and acknowledge.
     console.log(`User ${userId} executed action: ${actionId}`);
+    
+    // Notify the user in real-time
+    emitToUser(userId, 'action-complete', { actionId });
     
     res.json({ success: true, message: `Action ${actionId} executed successfully.` });
   } catch (error) {

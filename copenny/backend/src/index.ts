@@ -13,6 +13,8 @@ import cron from 'node-cron';
 import { query } from './config/db';
 import { detectSubscriptions } from './services/subscriptionService';
 import { evaluateRules } from './services/ruleEngineService';
+import http from 'http';
+import { initializeWebSocket } from './services/websocketService';
 
 dotenv.config();
 
@@ -58,6 +60,11 @@ cron.schedule('0 0 * * *', async () => {
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const server = http.createServer(app);
+
+// Initialize WebSockets
+initializeWebSocket(server);
+
+server.listen(PORT, () => {
+  console.log(`Backend server running on http://localhost:${PORT}`);
 });
