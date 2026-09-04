@@ -9,7 +9,7 @@ export function useAuth() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const login = async (credentials: any) => {
+  const login = async (credentials: Record<string, unknown>) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -18,15 +18,20 @@ export function useAuth() {
       setAuth(authUser, authToken);
       router.push('/');
       return true;
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed');
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
+        setError(errorData || 'Login failed');
+      } else {
+        setError('Login failed');
+      }
       return false;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (userData: any) => {
+  const register = async (userData: Record<string, unknown>) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -35,8 +40,13 @@ export function useAuth() {
       setAuth(authUser, authToken);
       router.push('/');
       return true;
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed');
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
+        setError(errorData || 'Registration failed');
+      } else {
+        setError('Registration failed');
+      }
       return false;
     } finally {
       setIsLoading(false);

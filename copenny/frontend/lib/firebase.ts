@@ -23,7 +23,8 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 // Initialize analytics only on the client side
-export let analytics: any = null;
+import type { Analytics } from 'firebase/analytics';
+export let analytics: Analytics | null = null;
 if (typeof window !== "undefined") {
   analytics = getAnalytics(app);
 }
