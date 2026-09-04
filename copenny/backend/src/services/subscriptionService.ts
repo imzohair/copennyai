@@ -75,7 +75,7 @@ export async function detectSubscriptions(userId: number) {
      FROM transactions 
      WHERE user_id = $1 AND date >= NOW() - INTERVAL '90 days' AND type = 'debit'
      GROUP BY description, amount
-     HAVING COUNT(*) >= 2
+     HAVING COUNT(*) >= 3
      ORDER BY frequency DESC`,
     [userId]
   );

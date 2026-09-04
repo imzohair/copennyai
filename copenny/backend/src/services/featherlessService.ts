@@ -57,10 +57,9 @@ export async function generateInsight(transactions: any[], userContext: any): Pr
     const response = await featherlessClient.chat.completions.create({
       model: DEFAULT_MODEL,
       messages: [
-        { role: 'system', content: 'You are an expert financial advisor. Output only valid JSON.' },
+        { role: 'system', content: 'You are an expert AI. Output ONLY raw JSON without markdown blocks.' },
         { role: 'user', content: prompt }
-      ],
-      response_format: { type: 'json_object' }
+      ]
     });
     
     const content = response.choices[0]?.message?.content || '{"insights":[]}';
@@ -93,7 +92,6 @@ export async function generateAction(userData: any, subscriptions: any[]): Promi
         { role: 'system', content: 'You are a proactive wealth manager. Output only valid JSON.' },
         { role: 'user', content: prompt }
       ],
-      response_format: { type: 'json_object' }
     });
 
     const content = response.choices[0]?.message?.content || '{"actions":[]}';
@@ -141,7 +139,6 @@ export async function classifyTransaction(description: string, amount: number): 
         { role: 'system', content: 'You are an accurate transaction classifier. Output only valid JSON.' },
         { role: 'user', content: prompt }
       ],
-      response_format: { type: 'json_object' }
     });
 
     const content = response.choices[0]?.message?.content || '{"category": "Other"}';
@@ -165,7 +162,6 @@ export async function detectAnomaly(transactions: any[]): Promise<any[]> {
         { role: 'system', content: 'You are a fraud and anomaly detection AI. Output only valid JSON.' },
         { role: 'user', content: prompt }
       ],
-      response_format: { type: 'json_object' }
     });
 
     const content = response.choices[0]?.message?.content || '{"anomalies":[]}';
