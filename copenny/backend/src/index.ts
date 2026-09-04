@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import transactionRoutes from './routes/transactionRoutes';
+import goalRoutes from './routes/goalRoutes';
+import subscriptionRoutes from './routes/subscriptionRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -20,6 +22,8 @@ app.get('/api/health', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/goals', goalRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler);
