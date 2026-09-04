@@ -60,14 +60,14 @@ export const Timeline: React.FC = () => {
               
               {/* Main Statement */}
               <p className="text-body-lg text-on-surface font-normal leading-relaxed mb-space-md">
-                Your dining out spending is <span className="text-primary font-semibold">28% higher</span> than last month. You've spent <span className="tabular-nums font-semibold text-white">$342</span> on restaurants so far in May, compared to <span className="tabular-nums font-medium text-outline">$268</span> in April.
+                Your dining out spending is <span className="text-primary font-semibold">28% higher</span> than last month. You've spent <span className="tabular-nums font-semibold text-white">₹34,200</span> on restaurants so far in May, compared to <span className="tabular-nums font-medium text-outline">₹26,800</span> in April.
               </p>
               
               {/* Micro Comparison Chart */}
               <div className="bg-[#141414] border border-[#2a2a2a] p-space-md rounded-DEFAULT mb-space-md">
                 <div className="flex items-center justify-between text-label-caps font-label-caps text-outline uppercase tracking-wider mb-2">
                   <span>Spend Delta Breakdown</span>
-                  <span className="text-primary tabular-nums font-semibold">+ $74.00 Over Baseline</span>
+                  <span className="text-primary tabular-nums font-semibold">+ ₹7,400.00 Over Baseline</span>
                 </div>
                 
                 {/* Dual comparison bars */}
@@ -75,7 +75,7 @@ export const Timeline: React.FC = () => {
                   <div>
                     <div className="flex justify-between text-body-sm text-outline mb-1 tabular-nums">
                       <span>April Total</span>
-                      <span>$268.00</span>
+                      <span>₹26,800.00</span>
                     </div>
                     <div className="w-full bg-[#201f1f] h-2 rounded-DEFAULT overflow-hidden">
                       <div className="bg-outline/50 h-full rounded-DEFAULT" style={{ width: '58%' }}></div>
@@ -84,7 +84,7 @@ export const Timeline: React.FC = () => {
                   <div>
                     <div className="flex justify-between text-body-sm text-white mb-1 tabular-nums font-medium">
                       <span>May (Current)</span>
-                      <span className="text-primary">$342.00</span>
+                      <span className="text-primary">₹34,200.00</span>
                     </div>
                     <div className="w-full bg-[#201f1f] h-2 rounded-DEFAULT overflow-hidden">
                       <div className="bg-primary h-full rounded-DEFAULT" style={{ width: '78%' }}></div>
@@ -100,7 +100,7 @@ export const Timeline: React.FC = () => {
                   <span>Why? Analytical Reasoning</span>
                 </summary>
                 <div className="mt-space-sm p-space-sm bg-[#1e1e1e] border-l-2 border-primary wire-border text-body-md text-on-surface-variant leading-relaxed">
-                  3 dinners at <strong className="text-white">L'Arpège</strong> and <strong className="text-white">Nobu</strong> accounted for 64% of this delta. Your typical weekday lunch spend remains steady at $18/day.
+                  3 dinners at <strong className="text-white">L'Arpège</strong> and <strong className="text-white">Nobu</strong> accounted for 64% of this delta. Your typical weekday lunch spend remains steady at ₹1,800/day.
                 </div>
               </details>
             </div>

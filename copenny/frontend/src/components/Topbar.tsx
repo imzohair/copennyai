@@ -19,7 +19,7 @@ export const Topbar: React.FC = () => {
           <span className="material-symbols-outlined absolute left-3.5 text-outline text-[18px] group-focus-within:text-secondary transition-colors">search</span>
           <input 
             className="w-full bg-[#181818] text-body-md text-on-surface placeholder:text-outline/60 pl-10 pr-20 py-2 rounded-DEFAULT border border-surface-container-high focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/40 transition-all font-body-md" 
-            placeholder="Ask Copenny anything... e.g., 'How can I save $500 this month?'" 
+            placeholder="Ask Copenny anything... e.g., 'How can I save ₹500 this month?'" 
             type="text"
           />
           <div className="absolute right-2.5 flex items-center gap-1.5">
@@ -35,7 +35,7 @@ export const Topbar: React.FC = () => {
         <div className="hidden xl:flex items-center gap-space-lg px-space-sm border-r border-surface-container-high">
           <div className="text-right">
             <div className="text-label-caps font-label-caps text-outline uppercase tracking-wider">Monthly Burn</div>
-            <div className="text-body-md font-title-md text-on-surface tabular-nums font-medium">$4,820<span className="text-outline text-body-sm font-normal">/mo</span></div>
+            <div className="text-body-md font-title-md text-on-surface tabular-nums font-medium">₹4,820<span className="text-outline text-body-sm font-normal">/mo</span></div>
           </div>
           <div className="text-right">
             <div className="text-label-caps font-label-caps text-outline uppercase tracking-wider">Savings Rate</div>

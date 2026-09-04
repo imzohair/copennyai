@@ -18,7 +18,7 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Quick Action CTA */}
-        <button className="w-full mb-space-lg py-space-xs px-space-sm bg-primary-container text-surface-container-lowest font-title-md rounded-DEFAULT flex items-center justify-between hover:bg-primary transition-colors duration-150 active:scale-[0.98]">
+        <button onClick={() => alert('Quick transaction feature is coming soon!')} className="w-full mb-space-lg py-space-xs px-space-sm bg-primary-container text-surface-container-lowest font-title-md rounded-DEFAULT flex items-center justify-between hover:bg-primary transition-colors duration-150 active:scale-[0.98]">
           <span className="font-body-md font-medium text-surface-container-lowest">Quick Transaction</span>
           <span className="material-symbols-outlined text-[18px]">add_circle</span>
         </button>
@@ -69,7 +69,7 @@ export const Sidebar: React.FC = () => {
             <span className="text-label-caps font-label-caps text-outline uppercase tracking-wider">Total Net Worth</span>
             <span className="material-symbols-outlined text-[14px] text-primary">lock</span>
           </div>
-          <div className="font-headline-sm text-white font-semibold tabular-nums tracking-tight">$2,480,500<span className="text-secondary text-body-sm font-normal ml-1">.00</span></div>
+          <div className="font-headline-sm text-white font-semibold tabular-nums tracking-tight">₹24,80,500<span className="text-secondary text-body-sm font-normal ml-1">.00</span></div>
           <div className="mt-1 flex items-center justify-between text-body-sm text-outline">
             <span>Tier: Sovereign Prime</span>
             <span className="text-secondary text-body-sm tabular-nums flex items-center gap-0.5">
