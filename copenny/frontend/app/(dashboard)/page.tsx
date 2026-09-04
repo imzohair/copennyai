@@ -28,6 +28,10 @@ import {
   Legend,
 } from "recharts";
 
+import { ActionCards } from "@/components/dashboard/ActionCards";
+import { InsightsFeed } from "@/components/dashboard/InsightsFeed";
+import { ChatInterface } from "@/components/chat/ChatInterface";
+
 const cashFlowData = [
   { month: "Apr", income: 95000, expenses: 42000 },
   { month: "May", income: 102000, expenses: 45000 },
@@ -60,8 +64,11 @@ export default function DashboardHome() {
       {/* Welcome */}
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Portfolio Overview</h1>
-        <p className="text-muted-foreground">Your financial command centre — September 2026</p>
+        <p className="text-muted-foreground">Your financial command centre</p>
       </div>
+
+      {/* Action Cards (AI Suggestions) */}
+      <ActionCards />
 
       {/* Metrics Grid */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -127,6 +134,18 @@ export default function DashboardHome() {
         </Card>
       </div>
 
+      {/* AI Section */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4">
+          <h2 className="text-lg font-bold">AI Insights</h2>
+          <InsightsFeed />
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-lg font-bold">Chat with Copenny</h2>
+          <ChatInterface />
+        </div>
+      </div>
+
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-7">
         {/* Cash Flow Chart */}
@@ -187,34 +206,6 @@ export default function DashboardHome() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Spending by Category */}
-      <Card className="bg-card border-border shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-base">Spending by Category — September</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={[
-              { cat: "Housing", amount: 22000 },
-              { cat: "Food", amount: 8500 },
-              { cat: "Transport", amount: 5200 },
-              { cat: "Shopping", amount: 7100 },
-              { cat: "Utilities", amount: 2800 },
-              { cat: "Entertainment", amount: 2600 },
-            ]} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="cat" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis tickFormatter={(v) => formatINR(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} width={55} />
-              <Tooltip
-                formatter={(val) => [formatINR(Number(val ?? 0))]}
-                contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-              />
-              <Bar dataKey="amount" name="Spent" fill="#D4AF37" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
     </div>
   );
 }
