@@ -51,10 +51,10 @@ export default function ImportTransactionsPage() {
         headers: { "Content-Type": "multipart/form-data" }
       });
       
-      const { summary } = res.data;
-      toast.success(`Imported ${summary.imported} transactions successfully.`);
-      if (summary.errors > 0) {
-        toast.warning(`${summary.errors} rows had errors and were skipped.`);
+      const { imported, errors } = res.data;
+      toast.success(`Imported ${imported} transactions successfully.`);
+      if (errors && errors.length > 0) {
+        toast.warning(`${errors.length} rows had errors and were skipped.`);
       }
       
       setTimeout(() => {
