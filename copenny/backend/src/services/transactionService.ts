@@ -184,7 +184,7 @@ export interface CSVRow {
 
 export async function importCSV(userId: number, fileBuffer: Buffer): Promise<{ imported: number; errors: string[] }> {
   const rows: CSVRow[] = parse(fileBuffer, {
-    columns: true,
+    columns: (headers) => headers.map((h: string) => h.toLowerCase()),
     skip_empty_lines: true,
     trim: true,
   });
