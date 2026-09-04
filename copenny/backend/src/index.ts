@@ -6,6 +6,7 @@ import transactionRoutes from './routes/transactionRoutes';
 import goalRoutes from './routes/goalRoutes';
 import subscriptionRoutes from './routes/subscriptionRoutes';
 import budgetRoutes from './routes/budgetRoutes';
+import chatRoutes from './routes/chatRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/budgets', budgetRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler);

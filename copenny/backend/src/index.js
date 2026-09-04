@@ -11,6 +11,7 @@ const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
 const subscriptionRoutes_1 = __importDefault(require("./routes/subscriptionRoutes"));
 const budgetRoutes_1 = __importDefault(require("./routes/budgetRoutes"));
+const chatRoutes_1 = __importDefault(require("./routes/chatRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -26,6 +27,7 @@ app.use('/api/transactions', transactionRoutes_1.default);
 app.use('/api/goals', goalRoutes_1.default);
 app.use('/api/subscriptions', subscriptionRoutes_1.default);
 app.use('/api/budgets', budgetRoutes_1.default);
+app.use('/api/chat', chatRoutes_1.default);
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler_1.errorHandler);
 app.listen(PORT, () => {

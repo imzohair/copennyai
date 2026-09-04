@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test:featherless": "npx tsx src/scripts/testFeatherless.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "firebase-admin": "^14.3.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.3.0",
+    "openai": "^7.10.0",
     "pg": "^8.23.0",
     "zod": "^4.5.4"
   },
