@@ -1,5 +1,0 @@
-{
-  "buildCommand": "npm install --prefix copenny/frontend && npm run build --prefix copenny/frontend",
-  "outputDirectory": "copenny/frontend/dist",
-  "framework": "vite"
-}
