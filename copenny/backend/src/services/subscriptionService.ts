@@ -71,7 +71,7 @@ export async function deleteSubscription(id: number, userId: number) {
 export async function detectSubscriptions(userId: number) {
   // Look for transactions with the exact same description and amount that occur at least twice in the last 90 days.
   const result = await query(
-    `SELECT description as name, amount, COUNT(*) as frequency
+    `SELECT description as name, amount, COUNT(*) as frequency, MAX(date) as last_date
      FROM transactions 
      WHERE user_id = $1 AND date >= NOW() - INTERVAL '90 days' AND type = 'debit'
      GROUP BY description, amount
@@ -80,20 +80,39 @@ export async function detectSubscriptions(userId: number) {
     [userId]
   );
   
-  // Calculate a basic confidence score based on frequency
-  return result.rows.map(row => {
+  const detected = [];
+  
+  // Calculate a basic confidence score and auto-insert
+  for (const row of result.rows) {
     const freq = parseInt(row.frequency, 10);
-    // 3 or more is high confidence (likely monthly), 2 is medium
-    const confidence = freq >= 3 ? 0.9 : 0.6;
+    const amount = parseFloat(row.amount);
+    const name = row.name;
+    const lastDate = new Date(row.last_date);
     
-    return {
-      name: row.name,
-      amount: parseFloat(row.amount),
-      frequency: freq,
-      suggested_cycle: 'monthly',
-      confidence_score: confidence
-    };
-  });
+    // Check if this subscription already exists for this user
+    const existing = await query(
+      'SELECT id FROM subscriptions WHERE user_id = $1 AND name = $2',
+      [userId, name]
+    );
+    
+    if (existing.rows.length === 0) {
+      // Calculate next billing date (approx 1 month from last date)
+      const nextDate = new Date(lastDate);
+      nextDate.setMonth(nextDate.getMonth() + 1);
+      
+      const sub = await createSubscription(userId, {
+        name: name,
+        amount: amount,
+        billing_cycle: 'monthly',
+        next_billing_date: nextDate.toISOString().split('T')[0] || '',
+        category: 'Subscriptions',
+        status: 'active'
+      });
+      detected.push(sub);
+    }
+  }
+  
+  return detected;
 }
 
 import * as featherlessService from './featherlessService';
