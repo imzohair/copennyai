@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export const Sidebar: React.FC = () => {
   return (
@@ -26,38 +27,38 @@ export const Sidebar: React.FC = () => {
         <nav className="space-y-1">
           <div className="text-[10px] font-label-caps tracking-widest text-outline uppercase px-space-xs mb-space-2xs">Core Modules</div>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-primary bg-surface-container border-l-2 border-primary rounded-DEFAULT font-title-md shadow-[0_0_15px_rgba(212,175,55,0.08)]" href="#timeline">
+          <NavLink to="/" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-title-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">timeline</span>
             <span className="flex-1">Financial Timeline</span>
             <span className="px-1.5 py-0.5 rounded-DEFAULT text-[10px] bg-primary/15 text-primary border border-primary/20 tabular-nums">LIVE</span>
-          </a>
+          </NavLink>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98]" href="#filter">
+          <NavLink to="/filter" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">tune</span>
             <span className="flex-1">Filter</span>
-          </a>
+          </NavLink>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98]" href="#goals">
+          <NavLink to="/goals" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">flag</span>
             <span className="flex-1">Goals</span>
             <span className="px-1.5 py-0.5 rounded-DEFAULT text-[10px] bg-surface-container-high text-outline tabular-nums">4</span>
-          </a>
+          </NavLink>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98]" href="#investments">
+          <NavLink to="/investments" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">trending_up</span>
             <span className="flex-1">Investments</span>
             <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-          </a>
+          </NavLink>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98]" href="#reports">
+          <NavLink to="/reports" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">analytics</span>
             <span className="flex-1">Reports</span>
-          </a>
+          </NavLink>
           
-          <a className="flex items-center gap-space-sm px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98]" href="#settings">
+          <NavLink to="/settings" className={({ isActive }) => `flex items-center gap-space-sm px-space-sm py-space-xs rounded-DEFAULT font-body-md transition-colors duration-150 active:scale-[0.98] ${isActive ? 'text-primary bg-surface-container border-l-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.08)]' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
             <span className="material-symbols-outlined text-[20px]">settings</span>
             <span className="flex-1">Settings</span>
-          </a>
+          </NavLink>
         </nav>
       </div>
 
