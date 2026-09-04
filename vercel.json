@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd copenny/frontend && npm install && npm run build",
+  "outputDirectory": "copenny/frontend/.next",
+  "installCommand": "cd copenny/frontend && npm install",
+  "devCommand": "cd copenny/frontend && npm run dev",
+  "framework": "nextjs",
+  "rewrites": [],
+  "headers": []
+}
