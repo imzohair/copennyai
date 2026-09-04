@@ -53,6 +53,28 @@ export function useAuth() {
     }
   };
 
+  const loginWithGoogle = async (idToken: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.post('/auth/google', { idToken });
+      const { user: authUser, token: authToken } = response.data;
+      setAuth(authUser, authToken);
+      router.push('/');
+      return true;
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const errorData = (err as { response?: { data?: { error?: string } } }).response?.data?.error;
+        setError(errorData || 'Google login failed');
+      } else {
+        setError('Google login failed');
+      }
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     storeLogout();
     router.push('/login');
@@ -66,6 +88,7 @@ export function useAuth() {
     error,
     login,
     register,
+    loginWithGoogle,
     logout,
   };
 }
