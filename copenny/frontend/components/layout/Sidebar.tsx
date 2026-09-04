@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Timeline", href: "/", icon: Activity },
-  { name: "Import Data", href: "/transactions/import", icon: CreditCard },
+  { name: "Import Data", href: "/import", icon: CreditCard },
   { name: "Goals", href: "/goals", icon: Target },
   { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
   { name: "Budgets", href: "/budgets", icon: Wallet },
