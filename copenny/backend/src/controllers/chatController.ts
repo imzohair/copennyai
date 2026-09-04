@@ -54,7 +54,7 @@ async function getUserContext(userId: number) {
 
 export async function generateInsights(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const { transactions, userContext } = await getUserContext(userId);
     
     const insights = await featherlessService.generateInsight(transactions, userContext);
@@ -67,7 +67,7 @@ export async function generateInsights(req: Request, res: Response) {
 
 export async function generateActions(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const { userContext } = await getUserContext(userId);
     
     // Fetch active subscriptions
@@ -116,7 +116,7 @@ export async function classifyTransaction(req: Request, res: Response) {
 
 export async function executeAction(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const { actionId } = req.body;
     
     if (!actionId) {
@@ -140,7 +140,7 @@ export async function executeAction(req: Request, res: Response) {
 
 export async function chatQuery(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const { query, history = [] } = req.body;
 
     if (!query) {

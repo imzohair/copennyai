@@ -24,9 +24,9 @@ export function initializeWebSocket(server: HttpServer) {
     }
 
     try {
-      const decoded = jwt.verify(token as string, JWT_SECRET) as { userId: number };
+      const decoded = jwt.verify(token as string, JWT_SECRET) as { id: number };
       // Attach userId to the socket
-      (socket as any).userId = decoded.userId;
+      (socket as any).userId = decoded.id;
       next();
     } catch (err) {
       return next(new Error('Authentication error: Invalid token'));
