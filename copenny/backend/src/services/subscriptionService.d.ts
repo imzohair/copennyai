@@ -16,5 +16,7 @@ export declare function detectSubscriptions(userId: number): Promise<{
     amount: number;
     frequency: number;
     suggested_cycle: string;
+    confidence_score: number;
 }[]>;
+export declare function autoCategorizeSubscription(name: string, amount: number): Promise<string>;
 //# sourceMappingURL=subscriptionService.d.ts.map

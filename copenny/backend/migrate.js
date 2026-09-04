@@ -84,6 +84,21 @@ async function migrate() {
     `);
     console.log('✓ budgets table ready');
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS rules (
+        id             SERIAL PRIMARY KEY,
+        user_id        INTEGER NOT NULL,
+        name           VARCHAR(255) NOT NULL,
+        condition      JSONB NOT NULL,
+        action         JSONB NOT NULL,
+        is_active      BOOLEAN DEFAULT true,
+        created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_rules_user_id ON rules(user_id);
+    `);
+    console.log('✓ rules table ready');
+
     console.log('\n✅ All migrations complete!');
   } catch (error) {
     console.error('Migration failed:', error);

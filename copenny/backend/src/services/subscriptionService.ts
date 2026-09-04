@@ -67,9 +67,9 @@ export async function deleteSubscription(id: number, userId: number) {
   return result.rows.length > 0;
 }
 
-// Detect subscriptions from transactions
+// Detect subscriptions from transactions using a refined heuristic
 export async function detectSubscriptions(userId: number) {
-  // Simple heuristic: Same amount, same description, at least 2 occurrences in the last 90 days.
+  // Look for transactions with the exact same description and amount that occur at least twice in the last 90 days.
   const result = await query(
     `SELECT description as name, amount, COUNT(*) as frequency
      FROM transactions 
@@ -80,11 +80,26 @@ export async function detectSubscriptions(userId: number) {
     [userId]
   );
   
-  // We don't automatically insert them, we just return potentials so the frontend can suggest them
-  return result.rows.map(row => ({
-    name: row.name,
-    amount: parseFloat(row.amount),
-    frequency: parseInt(row.frequency, 10),
-    suggested_cycle: 'monthly'
-  }));
+  // Calculate a basic confidence score based on frequency
+  return result.rows.map(row => {
+    const freq = parseInt(row.frequency, 10);
+    // 3 or more is high confidence (likely monthly), 2 is medium
+    const confidence = freq >= 3 ? 0.9 : 0.6;
+    
+    return {
+      name: row.name,
+      amount: parseFloat(row.amount),
+      frequency: freq,
+      suggested_cycle: 'monthly',
+      confidence_score: confidence
+    };
+  });
+}
+
+import * as featherlessService from './featherlessService';
+
+export async function autoCategorizeSubscription(name: string, amount: number) {
+  // Call our Featherless AI integration to guess the category for this recurring payment
+  const category = await featherlessService.classifyTransaction(name, amount);
+  return category;
 }

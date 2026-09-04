@@ -7,7 +7,12 @@ import goalRoutes from './routes/goalRoutes';
 import subscriptionRoutes from './routes/subscriptionRoutes';
 import budgetRoutes from './routes/budgetRoutes';
 import chatRoutes from './routes/chatRoutes';
+import ruleRoutes from './routes/ruleRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import cron from 'node-cron';
+import { query } from './config/db';
+import { detectSubscriptions } from './services/subscriptionService';
+import { evaluateRules } from './services/ruleEngineService';
 
 dotenv.config();
 
@@ -28,6 +33,27 @@ app.use('/api/goals', goalRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/rules', ruleRoutes);
+
+// Background Cron Jobs
+cron.schedule('0 0 * * *', async () => {
+  console.log('Running daily background jobs...');
+  try {
+    const usersRes = await query('SELECT id FROM users');
+    const users = usersRes.rows;
+
+    for (const user of users) {
+      const userId = user.id;
+      // 1. Detect new subscriptions
+      await detectSubscriptions(userId);
+      // 2. Evaluate all financial rules
+      await evaluateRules(userId);
+    }
+    console.log('Daily background jobs completed successfully.');
+  } catch (err) {
+    console.error('Error running background jobs:', err);
+  }
+});
 
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler);

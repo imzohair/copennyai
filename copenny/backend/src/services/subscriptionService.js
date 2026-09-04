@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllSubscriptions = getAllSubscriptions;
 exports.getSubscriptionById = getSubscriptionById;
@@ -6,6 +39,7 @@ exports.createSubscription = createSubscription;
 exports.updateSubscription = updateSubscription;
 exports.deleteSubscription = deleteSubscription;
 exports.detectSubscriptions = detectSubscriptions;
+exports.autoCategorizeSubscription = autoCategorizeSubscription;
 const db_1 = require("../config/db");
 async function getAllSubscriptions(userId) {
     const result = await (0, db_1.query)('SELECT * FROM subscriptions WHERE user_id = $1 ORDER BY next_billing_date ASC', [userId]);
@@ -65,21 +99,33 @@ async function deleteSubscription(id, userId) {
     const result = await (0, db_1.query)('DELETE FROM subscriptions WHERE id = $1 AND user_id = $2 RETURNING id', [id, userId]);
     return result.rows.length > 0;
 }
-// Detect subscriptions from transactions
+// Detect subscriptions from transactions using a refined heuristic
 async function detectSubscriptions(userId) {
-    // Simple heuristic: Same amount, same description, at least 2 occurrences in the last 90 days.
+    // Look for transactions with the exact same description and amount that occur at least twice in the last 90 days.
     const result = await (0, db_1.query)(`SELECT description as name, amount, COUNT(*) as frequency
      FROM transactions 
      WHERE user_id = $1 AND date >= NOW() - INTERVAL '90 days' AND type = 'debit'
      GROUP BY description, amount
      HAVING COUNT(*) >= 2
      ORDER BY frequency DESC`, [userId]);
-    // We don't automatically insert them, we just return potentials so the frontend can suggest them
-    return result.rows.map(row => ({
-        name: row.name,
-        amount: parseFloat(row.amount),
-        frequency: parseInt(row.frequency, 10),
-        suggested_cycle: 'monthly'
-    }));
+    // Calculate a basic confidence score based on frequency
+    return result.rows.map(row => {
+        const freq = parseInt(row.frequency, 10);
+        // 3 or more is high confidence (likely monthly), 2 is medium
+        const confidence = freq >= 3 ? 0.9 : 0.6;
+        return {
+            name: row.name,
+            amount: parseFloat(row.amount),
+            frequency: freq,
+            suggested_cycle: 'monthly',
+            confidence_score: confidence
+        };
+    });
+}
+const featherlessService = __importStar(require("./featherlessService"));
+async function autoCategorizeSubscription(name, amount) {
+    // Call our Featherless AI integration to guess the category for this recurring payment
+    const category = await featherlessService.classifyTransaction(name, amount);
+    return category;
 }
 //# sourceMappingURL=subscriptionService.js.map
