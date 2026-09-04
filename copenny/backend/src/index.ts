@@ -1,6 +1,8 @@
+// MUST be first: loads .env before any module reads process.env
+import './env';
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import transactionRoutes from './routes/transactionRoutes';
 import goalRoutes from './routes/goalRoutes';
@@ -16,7 +18,6 @@ import { evaluateRules } from './services/ruleEngineService';
 import http from 'http';
 import { initializeWebSocket } from './services/websocketService';
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
