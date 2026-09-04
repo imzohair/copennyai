@@ -13,7 +13,7 @@ const updateBudgetSchema = budgetSchema.partial();
 
 export async function getBudgets(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const month = req.query.month as string | undefined;
     const budgets = await budgetService.getAllBudgets(userId, month);
     res.json(budgets);
@@ -25,7 +25,7 @@ export async function getBudgets(req: Request, res: Response) {
 
 export async function createBudget(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const data = budgetSchema.parse(req.body);
     const newBudget = await budgetService.createBudget(userId, data as budgetService.BudgetInput);
     res.status(201).json(newBudget);
@@ -43,7 +43,7 @@ export async function createBudget(req: Request, res: Response) {
 
 export async function updateBudget(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     const data = updateBudgetSchema.parse(req.body);
     
@@ -65,7 +65,7 @@ export async function updateBudget(req: Request, res: Response) {
 
 export async function deleteBudget(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     
     const success = await budgetService.deleteBudget(id, userId);

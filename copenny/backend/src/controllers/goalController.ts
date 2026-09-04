@@ -16,7 +16,7 @@ const progressSchema = z.object({
 
 export async function getGoals(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const goals = await goalService.getAllGoals(userId);
     
     // Add progress percentage to each goal
@@ -34,7 +34,7 @@ export async function getGoals(req: Request, res: Response) {
 
 export async function createGoal(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const data = goalSchema.parse(req.body);
     const newGoal = await goalService.createGoal(userId, data as goalService.GoalInput);
     res.status(201).json(newGoal);
@@ -50,7 +50,7 @@ export async function createGoal(req: Request, res: Response) {
 
 export async function updateGoalProgress(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     const data = progressSchema.parse(req.body);
     
@@ -72,7 +72,7 @@ export async function updateGoalProgress(req: Request, res: Response) {
 
 export async function deleteGoal(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     
     const success = await goalService.deleteGoal(id, userId);

@@ -11,7 +11,7 @@ const ruleSchema = z.object({
 
 export const getRules = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const rules = await ruleEngineService.getRules(userId);
     res.json(rules);
   } catch (error) {
@@ -22,7 +22,7 @@ export const getRules = async (req: Request, res: Response) => {
 
 export const createRule = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const data = ruleSchema.parse(req.body);
     const rule = await ruleEngineService.createRule(userId, {
       name: data.name,
@@ -43,7 +43,7 @@ export const createRule = async (req: Request, res: Response) => {
 
 export const updateRule = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const ruleId = parseInt(req.params.id as string, 10);
     const data = ruleSchema.partial().parse(req.body);
 
@@ -71,7 +71,7 @@ export const updateRule = async (req: Request, res: Response) => {
 
 export const deleteRule = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const ruleId = parseInt(req.params.id as string, 10);
 
     const success = await ruleEngineService.deleteRule(ruleId, userId);

@@ -15,7 +15,7 @@ const updateSubscriptionSchema = subscriptionSchema.partial();
 
 export async function getSubscriptions(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const subscriptions = await subscriptionService.getAllSubscriptions(userId);
     res.json(subscriptions);
   } catch (error) {
@@ -26,7 +26,7 @@ export async function getSubscriptions(req: Request, res: Response) {
 
 export async function createSubscription(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const data = subscriptionSchema.parse(req.body);
     const newSub = await subscriptionService.createSubscription(userId, data as subscriptionService.SubscriptionInput);
     res.status(201).json(newSub);
@@ -42,7 +42,7 @@ export async function createSubscription(req: Request, res: Response) {
 
 export async function updateSubscription(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     const data = updateSubscriptionSchema.parse(req.body);
     
@@ -64,7 +64,7 @@ export async function updateSubscription(req: Request, res: Response) {
 
 export async function deleteSubscription(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const id = parseInt(req.params.id as string, 10);
     
     const success = await subscriptionService.deleteSubscription(id, userId);
@@ -81,7 +81,7 @@ export async function deleteSubscription(req: Request, res: Response) {
 
 export async function detectSubscriptions(req: Request, res: Response) {
   try {
-    const userId = (req as any).user.userId;
+    const userId = (req as any).user.id;
     const potentials = await subscriptionService.detectSubscriptions(userId);
     res.json(potentials);
   } catch (error) {

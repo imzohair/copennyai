@@ -58,7 +58,7 @@ export default function ImportTransactionsPage() {
       }
       
       setTimeout(() => {
-        router.push("/transactions");
+        router.push("/");
       }, 1500);
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Failed to import CSV");
