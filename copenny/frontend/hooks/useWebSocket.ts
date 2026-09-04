@@ -14,7 +14,7 @@ export function useWebSocket() {
   const { insights, actions, loadInsights, loadActions } = useChatStore();
 
   useEffect(() => {
-    const token = Cookies.get('token');
+    const token = Cookies.get('auth_token');
     
     if (!token) return;
 
