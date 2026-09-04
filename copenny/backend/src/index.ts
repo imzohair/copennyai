@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
+import transactionRoutes from './routes/transactionRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Error Handler Middleware (must be registered last)
 app.use(errorHandler);
